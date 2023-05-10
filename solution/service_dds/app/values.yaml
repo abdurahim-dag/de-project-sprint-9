@@ -9,7 +9,7 @@ image:
   repository: cr.yandex/crpi05k8ut4hfqdlfilr/dds_service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v2023-05-09-r29"
+  tag: "v2023-05-09-r33"
 
 containerPort: 5000
 

@@ -55,13 +55,13 @@ class DdsMessageProcessor:
                 product['h_product_pk'] = h_product_pk
                 product['h_category_pk'] = h_category_pk
 
-                products[h_product_pk] = {
+                products[str(h_product_pk)] = {
                     'product_name': product['name'],
                     'order_cnt': product['quantity'],
                 }
 
                 cnt[h_category_pk] += 1
-                categories[h_category_pk] = {
+                categories[str(h_category_pk)] = {
                     'category_name': product['category'],
                     'order_cnt': cnt[h_category_pk],
                 }
@@ -84,7 +84,6 @@ class DdsMessageProcessor:
                 'categories': categories,
                 'products': products
             }
-
 
             self._logger.info(f"RESULT MESSAGE {result}")
             self._producer.produce(result)

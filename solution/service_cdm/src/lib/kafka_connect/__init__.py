@@ -1,1 +1,1 @@
-from .kafka_connectors import KafkaConsumer, KafkaProducer  # noqa
+from .kafka_connectors import KafkaConsumer

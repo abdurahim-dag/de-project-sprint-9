@@ -1,6 +1,6 @@
 import json
 from typing import Dict, Optional
-
+from .utils import UUIDEncoder
 from confluent_kafka import Consumer, Producer
 
 
@@ -24,7 +24,7 @@ class KafkaProducer:
         self.p = Producer(params)
 
     def produce(self, payload: Dict) -> None:
-        self.p.produce(self.topic, json.dumps(payload))
+        self.p.produce(self.topic, json.dumps(payload, cls=UUIDEncoder, ensure_ascii=False))
         self.p.flush(10)
 
 
