@@ -1,11 +1,22 @@
-import uuid
 from datetime import datetime
-from typing import Any, Dict, List
 
 from lib.pg import PgConnect
-from pydantic import BaseModel
 
 
 class DdsRepository:
     def __init__(self, db: PgConnect) -> None:
         self._db = db
+
+    def insert(
+        self,
+        table_name: str,
+        params: dict,
+    ) -> None:
+        columns = ','.join(params.keys())
+        values = str([str(v) for v in params.values()])[1:-1]
+
+        with self._db.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    f"insert into dds.{table_name}({columns}) values ({values}) on conflict do nothing"
+                )
