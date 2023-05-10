@@ -113,13 +113,11 @@
 
 
 ### Как работать с репозиторием
-1. В вашем GitHub-аккаунте автоматически создастся репозиторий `de-project-sprint-9` после того, как вы привяжете свой GitHub-аккаунт на Платформе.
-2. Скопируйте репозиторий на свой компьютер. В качестве пароля укажите ваш `Access Token`, который нужно получить на странице [Personal Access Tokens](https://github.com/settings/tokens)):
-	* `git clone https://github.com/{{ username }}/de-project-sprint-9.git`
-3. Перейдите в директорию с проектом: 
-	* `cd de-project-sprint-9`
-4. Выполните проект и сохраните получившийся код в локальном репозитории:
-	* `git add .`
-	* `git commit -m 'my best commit'`
-5. Обновите репозиторий в вашем GitHub-аккаунте:
-	* `git push origin main`
+1. Переходим в папку сервиса service_dds
+2. Строим образ: docker build . -t cr.yandex/crpi05k8ut4hfqdlfilr/dds_service:v2023-05-09-r33
+3. Отправляем в реджистри: docker push cr.yandex/crpi05k8ut4hfqdlfilr/dds_service:v2023-05-09-r33
+4. Публикуем в кластере: helm upgrade --install --atomic dds-service app -n c08-ragim-atamov
+5. Переходим в папку сервиса service_cdm
+6. Строим образ: docker build . -t cr.yandex/crpi05k8ut4hfqdlfilr/cdm_service:v2023-05-10-r6
+7. Отправляем в реджистри: docker push cr.yandex/crpi05k8ut4hfqdlfilr/cdm_service:v2023-05-10-r6
+8. Публикуем в кластере: helm upgrade --install --atomic cdm-service app -n c08-ragim-atamov 
