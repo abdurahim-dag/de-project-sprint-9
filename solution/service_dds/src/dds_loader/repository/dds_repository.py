@@ -12,6 +12,7 @@ class DdsRepository:
         table_name: str,
         params: dict,
     ) -> None:
+        """Функция шаблонной вставки в слой DDS."""
         columns = ','.join(params.keys())
         values = str([str(v) for v in params.values()])[1:-1]
 

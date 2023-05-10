@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from lib.pg import PgConnect
 
 
@@ -19,6 +17,8 @@ class CdmRepository:
         conflict_cols = ','.join(on_conflict)
         conflict_sets = ''
 
+        # Генерируем вложение, для DO UPDATE SET
+        # column = EXCLUDED.column, ...
         for i in range(len(column_names)):
             if columns[i] not in on_conflict:
                 conflict_sets += f"{column_names[i]} = excluded.{column_names[i]},"

@@ -1,22 +1,16 @@
 import datetime
 import decimal
-import uuid
-from typing import List
-
-from pydantic import (
-    BaseModel,
-    Field,
-    validator
-)
-from typing import Dict
 from uuid import UUID
+
+from pydantic import BaseModel
+from pydantic import Field
 
 
 class Base(BaseModel):
     load_dt: datetime.datetime
     load_src: str = Field('orders-system-kafka')
 
-
+# ХАБЫ
 class HOrder(Base):
     table: str = 'h_order'
     order_id: int
@@ -47,7 +41,7 @@ class HCategory(Base):
     h_category_pk: UUID
     category_name: str
 
-
+# САТЕЛЛИТЫ
 class SOrderCost(Base):
     table: str = 's_order_cost'
     cost: decimal.Decimal
@@ -84,7 +78,7 @@ class SRestaurantName(Base):
     name: str
     hk_restaurant_names_hashdiff: UUID | None
 
-
+# ЛИНКИ
 class LOrderUser(Base):
     table: str = 'l_order_user'
     hk_order_user_pk: UUID

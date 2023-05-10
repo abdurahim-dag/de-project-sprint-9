@@ -28,18 +28,16 @@ class DdsMessageProcessor:
         self._dds_repository = dds_repository
         self._batch_size = batch_size
 
-
     def run(self) -> None:
         self._logger.info(f"{datetime.utcnow()}: START DDS Loader")        
 
         for _ in range(self._batch_size):
             msg = self._consumer.consume()
-            self._logger.info(f"MESSAGE {msg}")
 
             if msg is None:
                 break
 
-            # Вычислим новые поля.
+            # Вычислим необходимые новые поля.
             msg['load_dt'] = datetime.utcnow()
             msg['h_order_pk'] = self._gen_uuid(str(msg['object_id']))
             msg['payload']['user']['h_user_pk'] = self._gen_uuid(msg['payload']['user']['id'])
@@ -66,10 +64,12 @@ class DdsMessageProcessor:
                     'order_cnt': cnt[h_category_pk],
                 }
 
+            # Генерим на основе входного сообщения модели хабов, сателлитов и линков.
             hubs = self._get_hubs(msg)
             satellites = self._get_satellites(msg)
             links = self._get_links(msg)
 
+            # Заганяем всё сразу в слой данных.
             for model in hubs + satellites + links:
                 table_name = model.table
                 model_dict = model.dict()
@@ -79,13 +79,13 @@ class DdsMessageProcessor:
                     params=model_dict
                 )
 
+            # Генерим сообщение, для следующего сервиса.
             result = {
                 'user_id': msg['payload']['user']['h_user_pk'],
                 'categories': categories,
                 'products': products
             }
 
-            self._logger.info(f"RESULT MESSAGE {result}")
             self._producer.produce(result)
             self._logger.info(f"{datetime.utcnow()}: SENT PRODUCER")
 
@@ -94,11 +94,13 @@ class DdsMessageProcessor:
 
     @classmethod
     def _gen_uuid(cls, value: str) -> uuid.UUID:
+        """Генератор UUID(sha-1) по заданной строке."""
         return uuid.uuid5(uuid.NAMESPACE_OID, value)
 
     @classmethod
     def _gen_hashdiff(cls, row: dict) -> uuid.UUID:
-        # Сериализуем данные в строку
+        """Генератор UUID хэш-ключа, для определения уникальности загруженной строки."""
+        # Сериализируем данные в строку.
         row_string = str(row)
 
         # Вычисляем хэш SHA-256
@@ -108,7 +110,9 @@ class DdsMessageProcessor:
         return uuid.UUID(hash_hex)
 
     def _get_hubs(self, msg:  dict) -> [Any]:
+        """Функция возвращает хабы из сообщения."""
         result = []
+        # Для всех продуктов генерим хабы h_product и h_category и заносим в общий список.
         for product in msg['payload']['products']:
             result.append(
                 HProduct(
@@ -124,6 +128,7 @@ class DdsMessageProcessor:
                     h_category_pk=product['h_category_pk']
                 )
             )
+        # Добавляем в общий список оставшиеся хабы.
         result.extend(
             [
                 HOrder(
@@ -148,7 +153,7 @@ class DdsMessageProcessor:
 
 
     def _get_satellites(self, msg:  dict) -> [Any]:
-
+        """Функция возвращает сателлиты из сообщения."""
         user = msg['payload']['user']
         order = {
             'id': msg['object_id'],
@@ -183,7 +188,6 @@ class DdsMessageProcessor:
         ]
 
         for product in msg['payload']['products']:
-
             result.append(
                 SProductName(
                     load_dt=msg['load_dt'],
@@ -192,6 +196,7 @@ class DdsMessageProcessor:
                 )
             )
 
+        # У всех моделей поле *_hashdiff заполняется одинаково.
         for model in result:
             for field_name in model.__fields__:
                 if 'hashdiff' in field_name:
@@ -200,6 +205,7 @@ class DdsMessageProcessor:
         return result
 
     def _get_links(self, msg: dict) -> [Any]:
+        """Функция возвращает линки из сообщения."""
         result = [
             LOrderUser(
                 h_order_pk=msg['h_order_pk'],

@@ -24,7 +24,6 @@ if __name__ == '__main__':
     config = AppConfig()
 
     # Инициализируем процессор сообщений.
-    # Пока он пустой. Нужен для того, чтобы потом в нем писать логику обработки сообщений из Kafka.
     proc = DdsMessageProcessor(
         consumer=config.kafka_consumer(),
         producer=config.kafka_producer(),
@@ -34,7 +33,7 @@ if __name__ == '__main__':
     )
 
     # Запускаем процессор в бэкграунде.
-    # BackgroundScheduler будет по расписанию вызывать функцию run нашего обработчика(SampleMessageProcessor).
+    # BackgroundScheduler будет по расписанию вызывать функцию run нашего обработчика.
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=proc.run, trigger="interval", seconds=config.DEFAULT_JOB_INTERVAL)
     scheduler.start()

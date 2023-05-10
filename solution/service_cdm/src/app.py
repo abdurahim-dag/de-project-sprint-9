@@ -6,6 +6,7 @@ from flask import Flask
 from app_config import AppConfig
 from cdm_loader import CdmMessageProcessor, CdmRepository
 
+
 app = Flask(__name__)
 
 config = AppConfig()
@@ -24,7 +25,6 @@ if __name__ == '__main__':
     config = AppConfig()
 
     # Инициализируем процессор сообщений.
-    # Пока он пустой. Нужен для того, чтобы потом в нем писать логику обработки сообщений из Kafka.
     proc = CdmMessageProcessor(
         consumer=config.kafka_consumer(),
         cdm_repository=CdmRepository(db=config.pg_warehouse_db()),
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     )
 
     # Запускаем процессор в бэкграунде.
-    # BackgroundScheduler будет по расписанию вызывать функцию run нашего обработчика(SampleMessageProcessor).
+    # BackgroundScheduler будет по расписанию вызывать функцию run нашего обработчика.
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=proc.run, trigger="interval", seconds=config.DEFAULT_JOB_INTERVAL)
     scheduler.start()

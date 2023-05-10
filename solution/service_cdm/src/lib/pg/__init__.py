@@ -1,1 +1,1 @@
-from .pg_connect import PgConnect  # noqa
+from .pg_connect import PgConnect

@@ -20,9 +20,8 @@ class CdmMessageProcessor:
         self._cdm_repository = cdm_repository
         self._batch_size = batch_size
 
-
     def run(self) -> None:
-        self._logger.info(f"{datetime.utcnow()}: START DDS Loader")        
+        self._logger.info(f"{datetime.utcnow()}: START CDM Loader")
 
         for _ in range(self._batch_size):
             msg = self._consumer.consume()
@@ -35,6 +34,8 @@ class CdmMessageProcessor:
             categories = msg['categories']
             user_product_counters = []
             user_category_counters = []
+
+            # Заполним список моделей
 
             for product_id in products.keys():
                 user_product_counters.append(
@@ -56,10 +57,16 @@ class CdmMessageProcessor:
                     )
                 )
 
+            # Для всех моделей из общего списка запускаем загрузку в слой.
             for model in user_product_counters + user_category_counters:
+                # Параметры, для запроса
                 params = model.dict(by_alias=True, exclude={'table', 'on_conflict'})
                 self._cdm_repository.insert(
                     table_name=model.table,
                     params=params,
-                    on_conflict=model.on_conflict
+                    on_conflict=model.on_conflict # список столбцов на проверку уникальности записей
                 )
+
+            self._logger.info(f"CDM Models saved.")
+
+        self._logger.info(f"{datetime.utcnow()}: FINISH CDM Loader")
