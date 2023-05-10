@@ -26,7 +26,7 @@ class CdmRepository:
         sql = f"""
             insert into cdm.{table_name}({columns}) values ({values})
             on conflict ({conflict_cols}) do update
-            SET {conflict_sets[:-2]};
+            SET {conflict_sets[:-1]};
         """
 
         with self._db.connection() as conn:
