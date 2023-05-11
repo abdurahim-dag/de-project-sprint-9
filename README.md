@@ -5,7 +5,7 @@
 В этом проекте нужно реализовать два оставшихся сервиса, которые заполняют слои DDS и CDM, и визуализировать данные из витрины в дашборде.
 
 Полная архитектура решения выглядит так:
-![img.png](img.png)
+![img.png](images/img.png)
 
 ## Требования.
 ### Бизнес-требования
@@ -37,13 +37,13 @@
 ## ER диаграммы DWH
 
 ### STG
-![img_1.png](img_1.png)
+![img_1.png](images/img_1.png)
 
 ### DDS
-![img_2.png](img_2.png)
+![img_2.png](images/img_2.png)
 
 ### CDM
-![img_3.png](img_3.png)
+![img_3.png](images/img_3.png)
 
 ##  Сервис DDS
 
