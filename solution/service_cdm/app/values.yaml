@@ -24,7 +24,7 @@ config:
   PG_WAREHOUSE_PORT: "6432"
   PG_WAREHOUSE_DBNAME: "sprint9dwh"
   PG_WAREHOUSE_USER: "sysdba"
-  PG_WAREHOUSE_PASSWORD: "Ragim1984"
+  PG_WAREHOUSE_PASSWORD: "Password"
   REDIS_HOST: "c-c9q5o4v6af36n3vl5p21.rw.mdb.yandexcloud.net"
   REDIS_PORT: "6380"
   REDIS_PASSWORD: "qwerty123$"
